@@ -1,0 +1,13 @@
+.nav-ul-custom {
+  white-space: nowrap;
+  display:block!important;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch
+}
+
+.nav-li-custom {
+  display: inline-block
+}

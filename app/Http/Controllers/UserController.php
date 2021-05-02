@@ -1,150 +1,115 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\UserRequest;
 use App\User;
 use App\Employees;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Carbon\Carbon;
+use App\Table\UserTable;
+use mysql_xdevapi\Exception;
+
 class UserController extends Controller
 {
-    public function ListUser(Request $req){
-        $username = $req->session()->get('username');
-        $inforLogin = Employees::query()
-			->select(
-				'employees.employee_code', 
-				'employees.fullname',
-				'employees.img'
-				)
-			->JOIN ('user', 'user.employee_id','=','employees.employee_id')
-			->WHERE ([
-				['user.username', $username],
-				['employees.status', 0]
-			])
-			->get();
 
-        $limit = 10;
-        $page            = $req->query('page');
-        $numberOfRecords = User::query()->count();
-        $numberOfPage    = $numberOfRecords > 0 ? ceil($numberOfRecords / $limit) : 1;
-        $users         = User::query()
-            ->select('user_id',
-                'employees.employee_code',
-                'employees.fullname',
-                'username',
-                'password',
-                'role',
-                'is_active',
-                'type')
-            ->JOIN ('employees', 'employees.employee_id', '=', 'user.employee_id')
-            ->skip(($page - 1) * $limit)
-            ->take($limit)
-            ->get();
-        return view('user/list_user', [
-            'users'             => $users,
-            'numberOfRecords'   => $numberOfRecords,
-            'page'              => $page,
-            'numberOfPage'      => $numberOfPage,
-            'inforLogin'		=> $inforLogin,
-            'username'          => $req->session()->get('username')
-        ]);
+    protected $title_page = 'Quản Trị Viên';
+
+    protected $field_form = [
+        'name' => [
+            'label' => 'Họ và tên',
+            'type' => 'text',
+            'required' => true
+        ],
+        'email' => [
+            'label' => 'Email',
+            'type' => 'text',
+            'required' => true
+        ],
+        'password' => [
+            'label' => 'Mật khẩu',
+            'type' => 'password',
+            'required' => true
+        ]
+    ];
+
+    public function __construct()
+    {
+        parent::__construct();
     }
-    public function AddUser(Request $req, $id){
-        $username = $req->session()->get('username');
-        $inforLogin = Employees::query()
-			->select(
-				'employees.employee_code', 
-				'employees.fullname',
-				'employees.img'
-				)
-			->JOIN ('user', 'user.employee_id','=','employees.employee_id')
-			->WHERE ([
-				['user.username', $username],
-				['employees.status', 0]
-			])
-			->get();
 
-        $errors = new MessageBag();
-        $employee = Employees::query()
-            ->select('employee_code', 'fullname')->where('employee_id','=',$id)->get();
-            if (!empty($req->post())) {
-                $validator = Validator::make($req->post(), [
-                    'username'      => 'required|unique:user,username|min:5',
-                    'password'          => 'required|min:5'
-                ]);
-        
-                if (!$validator->fails()) {
-                    $newUser = new User();
-                    $newUser->employee_id = $id;
-                    $newUser->username = $req->post('username');
-                    $newUser->password = $req->post('password');                
-                    $newUser->role = $req->post('role');
-                    $newUser->is_active = 'active';    // giá trị mặc định là hoạt động
-                    $newUser->type = $req->post('type');
-                    $newUser->created_at = Carbon::now();
-                    $newUser->save();
-                    // var_dump($newEmployee);exit;
-                    // Sau khi thêm mới tài khoản nhân viên -> chuyển đến form danh sách tài khoản
-                    return redirect('User');
-                }
-                $errors = $validator->errors();
-            }
-        return view('user/add_user',[
-            'errors'        => $errors,
-            'employee'      => $employee,
-            'inforLogin'	=> $inforLogin,
-            'username'      => $req->session()->get('username')
+    public function index(UserTable $table)
+    {
+        return view('base/view', [
+            'table' => $table->html()
         ]);
     }
 
-    
-    public function EditUser(Request $req, $id){
-        $username = $req->session()->get('username');
-        $inforLogin = Employees::query()
-			->select(
-				'employees.employee_code', 
-				'employees.fullname',
-				'employees.img'
-				)
-			->JOIN ('user', 'user.employee_id','=','employees.employee_id')
-			->WHERE ([
-				['user.username', $username],
-				['employees.status', 0]
-			])
-			->get();
+    public function list(Request $request, UserTable $table)
+    {
+        return $table->render();
+    }
 
-        $errors = new MessageBag();
-        $employee = Employees::query()
-            ->select('employee_code', 'fullname', 'username', 'password', 'role', 'type' )
-            ->join('user', 'user.employee_id', '=', 'employees.employee_id')
-            ->where('user.user_id','=',$id)->get();
-            if (!empty($req->post())) {
-                $validator = Validator::make($req->post(), [
-                    'username'      => 'required|min:5',
-                    'password'          => 'required|min:5'
-                ]);
-        
-                if (!$validator->fails()) {
-                    $newUser = User::find($id);
-                    $newUser->username = $req->post('username');
-                    $newUser->password = $req->post('password');                
-                    $newUser->role = $req->post('role');
-                    $newUser->type = $req->post('type');
-                    $newUser->save();
-                    // var_dump($newEmployee);exit;
-                    // Sau khi thêm mới tài khoản nhân viên -> chuyển đến form danh sách tài khoản
-                    return redirect('User');
-                }
-                $errors = $validator->errors();
-            }
-        return view('user/edit_user',[
-            'errors'            => $errors,
-            'employee'          => $employee,
-            'inforLogin'		=> $inforLogin,
-            'username'          => $req->session()->get('username')
+    public function store(UserRequest $request)
+    {
+        User::create([
+            'name' => $request->input('name') ?? '',
+            'email' => $request->input('email') ?? '',
+            'password' => Hash::make($request->input('password') ),
         ]);
+
+        return responseSuccess('Tạo mới thành công');
+    }
+
+    public function edit($id)
+    {
+        return User::find($id);
+    }
+
+    public function update($id, UserRequest $request)
+    {
+        $user = User::find($id);
+        $data = $request->input();
+
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($request->input('password') );
+        } else {
+            unset($data['password']);
+        }
+
+        $user->fill($data);
+        $user->save();
+
+        return responseSuccess('Cập nhật thành công thành công');
+    }
+
+    public function destroy($id)
+    {
+        User::destroy($id);
+        return responseSuccess('Xoá thành công');
+    }
+
+    public function deletes(Request $request)
+    {
+        $ids = $request->input('ids') ?? [];
+
+        DB::beginTransaction();
+        try {
+
+            foreach ($ids as $id) {
+                User::destroy($id);
+            }
+            DB::commit();
+
+            return responseSuccess('Xoá thành công');
+        } catch (Exception $e) {
+            DB::rollback();
+            return  responseError($e->getMessage());
+        }
     }
 }

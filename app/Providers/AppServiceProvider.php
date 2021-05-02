@@ -23,6 +23,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        app('view')->composer('layouts.default', function ($view) {
+
+            $action = app('request')->route()->getAction();
+
+            $controller = class_basename($action['controller']);
+
+            $prefix = $action['prefix'];
+
+            $as = strtolower(explode('Controller@', $controller)[0]) . 's';
+
+            list($controller, $action) = explode('@', $controller);
+
+            $view->with(compact('controller', 'action', 'prefix', 'as'));
+
+        });
     }
 }

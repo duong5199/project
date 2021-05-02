@@ -1,25 +1,38 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>HRM | A&T Asia Technology</title>
-    <link rel="stylesheet" href="{{ asset('/dist/css/login.css') }}">
-    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminLTE 3 | Log in (v2)</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('/plugins/fontawesome-free/css/all.min.css')}}">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="{{ asset('/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="{{ asset('/plugins/toastr/toastr.min.css')}}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('/dist/css/adminlte.min.css')}}">
 </head>
+<body class="hold-transition login-page">
 
-<body class="bg-img">
-    <div class="container-fluid">
-        @section('content')
-        @show
-    </div>
-    <script src="{{ asset('/dist/js/login.js')}}"></script>
+@section('content')
+@show
+
+<!-- jQuery -->
+<script src="{{ asset('/plugins/jquery/jquery.min.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ asset('/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{ asset('/dist/js/adminlte.min.js')}}"></script>
+<!-- Toastr -->
+<script src="{{ asset('/plugins/toastr/toastr.min.js')}}"></script>
+
+@section('script')
+@show
+
 </body>
-
 </html>

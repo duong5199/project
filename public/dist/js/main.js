@@ -24,8 +24,172 @@ $(function () {
     COMMON.init();
     MODAL.init();
     FORM.init();
+    LIB.init();
     DATATABLE.init();
 });
+
+const LIB = {
+
+    init: function () {
+        this.date();
+        this.select2();
+        this.switch();
+        this.dropzone();
+    },
+
+    switch: function () {
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
+    },
+
+    select2: function (data) {
+        data = typeof data === 'object' ? data : [];
+        $.each(options_select2, function (key, option) {
+            let dataSelected = typeof data[key] !== 'undefined' ? data[key] : '';
+            COMMON.load_select2(option, dataSelected);
+        });
+    },
+
+    date: function () {
+
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: true,
+            todayHighlight: true,
+
+        });
+
+        $('.datetimepicker').datetimepicker({
+            format: "yyyy-mm-dd HH:ii:ss",
+            autoclose: true,
+        });
+
+    },
+
+    dropzone: function () {
+        // DropzoneJS Demo Code Start
+        Dropzone.autoDiscover = false
+
+        // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+        var previewNode = document.querySelector("#template");
+
+        if (previewNode === null) return;
+
+        previewNode.id = " ";
+        var previewTemplate = previewNode.parentNode.innerHTML;
+        previewNode.parentNode.removeChild(previewNode);
+
+        var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+            url: url_ajax_upload_files || '', // Set the url
+            headers: {
+                'X-CSRF-TOKEN': csrfValue
+            },
+            thumbnailWidth: 80,
+            thumbnailHeight: 80,
+            parallelUploads: 20,
+            previewTemplate: previewTemplate,
+            autoQueue: false, // Make sure the files aren't queued until manually added
+            previewsContainer: "#previews", // Define the container to display the previews
+            clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+        })
+
+        myDropzone.on("addedfile", function (file) {
+            // Hookup the start button
+            file.previewElement.querySelector(".start").onclick = function () {
+                myDropzone.enqueueFile(file)
+            }
+
+            $(file.previewElement).find('.btn-group .view').attr('href', file.url);
+
+        })
+
+        myDropzone.on("removedfile", function (file) {
+            var fileName = file.name;
+
+            $.ajax({
+                type: 'POST',
+                url: url_ajax_delete_files || '',
+                data: {
+                    name: fileName,
+                    employees_id: $('#form-upload-files input[name="employees_id"]').val() || 0,
+                    request: 'delete'
+                },
+                sucess: function (data) {
+                    toastr['success']('Thành công');
+                }
+            });
+        })
+
+        $(document).on("click", '.open-modal-form-upload-file', function () {
+
+            $(document).find('#previews .row').remove();
+
+            id = $(this).data('id');
+            $('#base-form [name="id"]').val(id);
+            let url = url_ajax_get_files.replace('-id-', id || '0')
+            $('#modal-upload-files').modal('show');
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    $.each(data.image, function (key, value) {
+
+                        myDropzone.emit("addedfile", value);
+                        if (value.is_image) {
+                            myDropzone.emit("thumbnail", value, value.url);
+                        }
+                        myDropzone.emit("complete", value);
+                        myDropzone.emit("info", value, value.url);
+
+                    });
+
+                    $('#modal-upload-files .modal-title').html('Thêm tài liệu cho : ' + data.employee.name);
+                    $('#form-upload-files input[name="employees_id"]').val(data.employee.id || 0);
+                    $(document).find('#previews .btn-group .start').attr('disabled', 'disabled')
+                    $(document).find('#previews .progress-bar-success').css('width', '100%')
+                }
+            });
+
+            // myDropzone.init(
+            //
+            // );
+
+        });
+
+        // Update the total progress bar
+        myDropzone.on("totaluploadprogress", function (progress) {
+            document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
+        })
+
+        myDropzone.on("sending", function (file, xhr, formData) {
+            formData.append("employees_id", $('#form-upload-files input[name="employees_id"]').val() || 0)
+            // Show the total progress bar when upload starts
+            document.querySelector("#total-progress").style.opacity = "1"
+            // And disable the start button
+            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+        })
+
+        // Hide the total progress bar when nothing's uploading anymore
+        myDropzone.on("queuecomplete", function (progress) {
+            document.querySelector("#total-progress").style.opacity = "0"
+        })
+
+        // Setup the buttons for all transfers
+        // The "add files" button doesn't need to be setup because the config
+        // `clickable` has already been specified.
+        document.querySelector("#actions .start").onclick = function () {
+            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
+        }
+        // document.querySelector("#actions .cancel").onclick = function () {
+        //     myDropzone.removeAllFiles(true)
+        // }
+        // DropzoneJS Demo Code End
+    }
+
+}
 
 const COMMON = {
     init: function () {
@@ -115,6 +279,35 @@ const COMMON = {
             })
         });
 
+    },
+
+    load_select2: function (options, dataSelected) {
+        let params_ajax = {
+            url: options.url.trim().toString(),
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        };
+
+        console.log(params_ajax)
+        if (typeof options.ajax === 'object') {
+            params_ajax = Object.assign(params_ajax, options.ajax)
+        }
+        options.selector.select2({
+            theme: 'bootstrap4',
+            allowClear: true,
+            placeholder: options.placeholder,
+            multiple: options.multiple,
+            minimumResultsForSearch: options['hide_search'] ? -1 : 1,
+            data: dataSelected,
+            ajax: params_ajax
+        });
+        if (typeof dataSelected !== 'undefined') options.selector.find('> option').prop("selected", "selected").trigger("change");
     }
 }
 
@@ -123,6 +316,28 @@ const FORM = {
     init: function () {
         this.send();
     },
+
+    addCallback: function (data) {
+
+    },
+
+    afterAdd: function (func) {
+        this.addCallback = func
+    },
+
+    updateCallback: function (data) {
+
+    },
+
+    afterUpdate: function (func) {
+        this.updateCallback = func
+    },
+
+    afterSend: function (func) {
+        this.addCallback = func
+        this.updateCallback = func
+    },
+
 
     reset: function (_this) {
 
@@ -142,8 +357,16 @@ const FORM = {
             type: "GET",
             dataType: "JSON",
             success: function (data) {
+                LIB.select2(data);
                 Object.keys(data).map(function (key, index) {
-                    $(document).find(`[name="${key}"]`).val(data[key])
+                    switch (key) {
+                        case 'status':
+                            $(document).find(`[name="${key}"]`).bootstrapSwitch('state', data[key] === 1);
+                            break;
+                        default:
+                            $(document).find(`[name="${key}"]`).val(data[key])
+                    }
+
                 });
             },
             error: function (e) {
@@ -163,7 +386,7 @@ const FORM = {
 
             let data_req = form.serializeArray();
 
-            let url =  url_ajax_create;
+            let url = url_ajax_create;
             let method = "POST";
 
             if (action !== 'add') {
@@ -181,6 +404,12 @@ const FORM = {
                     DATATABLE.reload();
                     if (parseInt(data.code) === 200) {
                         $('#modal-form').modal('hide');
+                    }
+
+                    if (action !== 'add') {
+                        _this.updateCallback(data)
+                    } else {
+                        _this.addCallback(data)
                     }
                 },
                 error: function (e) {

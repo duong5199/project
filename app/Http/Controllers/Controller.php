@@ -41,6 +41,22 @@ class Controller extends BaseController
 
         foreach ($data as $key => $item) {
             switch ($item['type']) {
+                case 'files':
+                    $name = $key ?? '';
+                    $html .= view('base/input/files', compact('item', 'name'))->render();
+                    break;
+                case 'date':
+                    $name = $key ?? '';
+                    $html .= view('base/input/date', compact('item', 'name'))->render();
+                    break;
+                case 'select':
+                    $name = $key ?? '';
+                    $html .= view('base/input/select', compact('item', 'name'))->render();
+                    break;
+                case 'status':
+                    $name = $key ?? '';
+                    $html .= view('base/input/status', compact('item', 'name'))->render();
+                    break;
                 case 'textarea':
                     $name = $key ?? '';
                     $html .= view('base/input/textarea', compact('item', 'name'))->render();

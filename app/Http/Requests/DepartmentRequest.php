@@ -23,21 +23,8 @@ class DepartmentRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [];
-
-//        switch ($this->method()) {
-//            case 'PUT':
-//                $rules = [
-//                    'name' => ['required', 'string', 'max:255'],
-//                ];
-//                break;
-//            case 'POST':
-//                $rules = [
-//                    'name' => ['required', 'string', 'max:255'],
-//                ];
-//                break;
-//        }
-
-        return $rules;
+        return [
+            'name' => ['required', 'string', 'max:255'],
+        ];
     }
 }

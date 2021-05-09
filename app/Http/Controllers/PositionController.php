@@ -18,7 +18,7 @@ class PositionController extends Controller
             'type' => 'text',
             'required' => true
         ],
-        'email' => [
+        'description' => [
             'label' => 'Mô tả',
             'type' => 'textarea',
             'rows' => 5
@@ -42,8 +42,19 @@ class PositionController extends Controller
         return $table->render();
     }
 
-    public function store(ThisRequest $request)
+    public function load(Request $request)
     {
+        $search = $request->input('q') ?? '';
+        return Model::select(['id', 'name as text'])
+            ->where('name', 'LIKE', '%'. $search .'%')
+            ->get()
+            ->toArray();
+    }
+
+    public function store(ThisRequest $request, Model $model)
+    {
+        $model->fill($request->all());
+        $model->save();
 
         return responseSuccess('Tạo mới thành công');
     }

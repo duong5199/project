@@ -31,12 +31,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('employees/list', 'EmployeeController@list')->name('employees.list');
     Route::post('employees/deletes', 'EmployeeController@deletes')->name('employees.deletes');
 
+    // Document
+    Route::post('document/upload-files', 'DocumentController@files')->name('document.upload-files');
+    Route::post('document/delete-files', 'DocumentController@deleteFiles')->name('document.delete-files');
+    Route::get('document/get-files/{id}', 'DocumentController@getFiles')->name('document.get-files');
+
     // Department
+    Route::get('departments/select2', 'DepartmentController@load')->name('departments.select2');
     Route::resource('departments', 'DepartmentController');
     Route::post('departments/list', 'DepartmentController@list')->name('departments.list');
     Route::post('departments/deletes', 'DepartmentController@deletes')->name('departments.deletes');
 
     // Position
+    Route::get('positions/select2', 'PositionController@load')->name('positions.select2');
     Route::resource('positions', 'PositionController');
     Route::post('positions/list', 'PositionController@list')->name('positions.list');
     Route::post('positions/deletes', 'PositionController@deletes')->name('positions.deletes');

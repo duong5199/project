@@ -8,7 +8,7 @@
         @endforeach
 
         @if($action)
-            <th width="80px">Hành Động</th>
+            <th width="100px">Hành Động</th>
         @endif
     </tr>
     </thead>

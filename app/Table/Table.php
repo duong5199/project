@@ -14,6 +14,8 @@ class Table
 
     protected $show_action = true;
 
+    protected $action_table = ['edit', 'delete'];
+
     private $data = [];
 
     private $column = [];
@@ -38,7 +40,7 @@ class Table
             $row = array_merge($row, $this->fill($item));
 
             if ($this->show_action) {
-                $action = buttonAction($item);
+                $action = buttonAction($item, $this->action_table);
                 $row[] = $action;
             }
 

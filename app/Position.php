@@ -3,14 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
 class Position extends Model
 {
-    use Notifiable;
+    protected $table = 'positions';
 
-    protected $table = 'position';
-
-    protected $primaryKey = 'position_id';
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'status',
+    ];
 }

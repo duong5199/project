@@ -22,8 +22,6 @@
 <link rel="stylesheet" href="{{ asset('/dist/css/adminlte.min.css')}}">
 <!-- overlayScrollbars -->
 <link rel="stylesheet" href="{{ asset('/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
-<!-- Daterange picker -->
-<link rel="stylesheet" href="{{ asset('/plugins/daterangepicker/daterangepicker.css')}}">
 <!-- summernote -->
 <link rel="stylesheet" href="{{ asset('/plugins/summernote/summernote-bs4.min.css')}}">
 <!-- DataTables -->
@@ -31,6 +29,27 @@
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
 
+<!-- daterange picker -->
+<link rel="stylesheet" href="{{ asset('/plugins/daterangepicker/daterangepicker.css')}}">
+<!-- iCheck for checkboxes and radio inputs -->
+<link rel="stylesheet" href="{{ asset('/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{{ asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+<!-- Bootstrap datepicker -->
+<link rel="stylesheet" href="{{ asset('plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')}}">
+<!-- Select2 -->
+<link rel="stylesheet" href="{{ asset('/plugins/select2/css/select2.min.css')}}">
+<link rel="stylesheet" href="{{ asset('/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+<!-- dropzonejs -->
+<link rel="stylesheet" href="{{ asset('/plugins/dropzone/min/dropzone.min.css')}}">
+
 <link rel="stylesheet" href="{{ asset('/dist/css/custom-nav.css')}}">
 
 <link rel="stylesheet" href="{{ asset('/dist/css/main.css')}}">
+
+<!-- jQuery -->
+<script src="{{ asset('/plugins/jquery/jquery.min.js')}}"></script>
+
+<script>
+    let options_select2 = {};
+</script>

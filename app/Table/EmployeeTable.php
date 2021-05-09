@@ -8,6 +8,8 @@ use App\Employee as Model;
 class EmployeeTable extends BaseTable
 {
 
+    protected $action_table = ['edit', 'file', 'delete'];
+
     public function __construct()
     {
         parent::__construct();

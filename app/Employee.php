@@ -25,4 +25,19 @@ class Employee extends Model
         'status',
     ];
 
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'employee_id', 'id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class)->withDefault();
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class)->withDefault();
+    }
+
 }

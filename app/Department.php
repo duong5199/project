@@ -3,14 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
 class Department extends Model
 {
-    use Notifiable;
+    protected $table = 'departments';
 
-    protected $table = 'department';
-
-    protected $primaryKey = 'department_id';
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'status',
+    ];
 }

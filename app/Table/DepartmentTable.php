@@ -19,7 +19,7 @@ class DepartmentTable extends BaseTable
 
         $row[] = $item->id;
         $row[] = $item->name;
-        $row[] = $item->email;
+        $row[] = $item->description;
         $row[] = formatDate($item->created_at);
 
         return $row;
@@ -30,7 +30,7 @@ class DepartmentTable extends BaseTable
         $query = Model::select([
             'id',
             'name',
-            'email',
+            'description',
             'created_at',
         ]);
 
@@ -48,9 +48,9 @@ class DepartmentTable extends BaseTable
                 'label' => 'Họ và tên',
                 'data' => 'name',
             ],
-            'email' => [
-                'label' => 'Email',
-                'data' => 'email',
+            'description' => [
+                'label' => 'Mô tả',
+                'data' => 'description',
             ],
             'created_at' => [
                 'label' => 'Ngày tạo',

@@ -14,19 +14,14 @@ class DepartmentController extends Controller
 
     protected $field_form = [
         'name' => [
-            'label' => 'Họ và tên',
+            'label' => 'Tên chức vụ',
             'type' => 'text',
             'required' => true
         ],
-        'email' => [
-            'label' => 'Email',
-            'type' => 'text',
-            'required' => true
-        ],
-        'password' => [
-            'label' => 'Mật khẩu',
-            'type' => 'password',
-            'required' => true
+        'description' => [
+            'label' => 'Mô tả',
+            'type' => 'textarea',
+            'rows' => 5
         ]
     ];
 
@@ -47,8 +42,20 @@ class DepartmentController extends Controller
         return $table->render();
     }
 
-    public function store(ThisRequest $request)
+    public function load(Request $request)
     {
+        $search = $request->input('q') ?? '';
+        return Model::select(['id', 'name as text'])
+            ->where('name', 'LIKE', '%'. $search .'%')
+            ->get()
+            ->toArray();
+    }
+
+
+    public function store(ThisRequest $request, Model $model)
+    {
+        $model->fill($request->all());
+        $model->save();
 
         return responseSuccess('Tạo mới thành công');
     }

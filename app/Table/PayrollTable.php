@@ -7,6 +7,9 @@ use App\Payroll as Model;
 
 class PayrollTable extends BaseTable
 {
+    protected $view_empty_data = 'payrolls/empty_data';
+
+    protected $action_table = ['edit', 'view', 'send', 'delete'];
 
     public function __construct()
     {
@@ -18,8 +21,8 @@ class PayrollTable extends BaseTable
         $row = [];
 
         $row[] = $item->id;
-        $row[] = $item->name;
-        $row[] = $item->email;
+        $row[] = $item->employee->name;
+//        $row[] = $item->email;
         $row[] = formatDate($item->created_at);
 
         return $row;
@@ -29,10 +32,16 @@ class PayrollTable extends BaseTable
     {
         $query = Model::select([
             'id',
-            'name',
-            'email',
+            'month',
+            'employee_id',
             'created_at',
         ]);
+
+        if (empty(request()->input('month'))) {
+            $query = $query->whereMonth('month', '=', date('m'));
+        } else {
+            $query = $query->whereMonth('month', '=', explode('-', request()->input('month'))[0]);
+        }
 
         $this->baseQuery($query);
     }
@@ -45,12 +54,8 @@ class PayrollTable extends BaseTable
                 'data' => 'id',
             ],
             'name' => [
-                'label' => 'Họ và tên',
-                'data' => 'name',
-            ],
-            'email' => [
-                'label' => 'Email',
-                'data' => 'email',
+                'label' => 'Nhân viên',
+                'data' => 'employee_id',
             ],
             'created_at' => [
                 'label' => 'Ngày tạo',

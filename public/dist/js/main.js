@@ -57,7 +57,14 @@ const LIB = {
             format: "dd/mm/yyyy",
             autoclose: true,
             todayHighlight: true,
+        });
 
+        $('.monthpicker').datepicker( {
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            autoclose: true,
+            todayHighlight: true,
         });
 
         $('.datetimepicker').datetimepicker({
@@ -458,6 +465,7 @@ const MODAL = {
 const DATATABLE = {
     init: function (options) {
 
+        this.filter();
         this.checkbox();
 
         let element = $('#data-table');
@@ -500,7 +508,16 @@ const DATATABLE = {
             ],
             'order': [[1, 'desc']],
             'bLengthChange': true,
-            "fnDrawCallback": function () {
+            "fnDrawCallback": function (data) {
+                $('#view-table #data-table_wrapper').show();
+                $('#view-table').find('#empty-view').remove();
+                $('#view-table').find('#data-table').css('width', '100%');
+                if (!data.json.recordsTotal) {
+                    if (typeof data.json.html !== "undefined") {
+                        $('#view-table #data-table_wrapper').hide();
+                        $('#view-table').append(data.json.html);
+                    }
+                }
                 // $("a.fancybox").fancybox();
                 $("#data-table-select-all").prop('checked', false);
             }
@@ -511,6 +528,28 @@ const DATATABLE = {
 
     reload: function () {
         table.ajax.reload(null, false);
+    },
+
+    filter: function () {
+        if ($('#form_filter').length === 0) return;
+
+        $('#form_filter .item').on('change keyup', function () {
+            $('#form_filter').trigger('submit');
+        })
+
+        $('#form_filter').submit(function (e) {
+            e.preventDefault();
+            let form_data = $(this).serializeArray();
+            let filter = {};
+            $.each(form_data, function (index, val) {
+                if (val.value !== '') {
+                    filter[val.name] = val.value;
+                }
+            });
+
+            dataFilter = filter;
+            DATATABLE.reload();
+        });
     },
 
     checkbox: function () {

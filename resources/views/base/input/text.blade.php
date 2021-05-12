@@ -11,5 +11,6 @@
     </label>
     <input type="{{ $item['type'] ?? 'text' }}" name="{{ $name ?? '' }}" class="form-control {{ $item['class'] ?? '' }}"
            id="{{ $item['id'] ?? '' }}"
+           value="{{ $item['value'] ?? '' }}"
            placeholder="{{ $item['label'] ?? 'label' }}">
 </div>

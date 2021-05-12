@@ -43,6 +43,7 @@
         @show
 
         @include('partials.modal-form')
+        @include('partials.modal-view')
     </div>
 
     @include('partials.footer')

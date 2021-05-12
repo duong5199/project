@@ -23,6 +23,9 @@ class Employee extends Model
         'position_id',
         'department_id',
         'status',
+        'salary',
+        'allowance',
+        'code',
     ];
 
     public function documents()
@@ -38,6 +41,11 @@ class Employee extends Model
     public function department()
     {
         return $this->belongsTo(Department::class)->withDefault();
+    }
+
+    public function payroll()
+    {
+        return $this->hasMany(Payroll::class, 'employee_id', 'id');
     }
 
 }

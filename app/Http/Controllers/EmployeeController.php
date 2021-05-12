@@ -29,6 +29,16 @@ class EmployeeController extends Controller
             'type' => 'text',
             'required' => true
         ],
+        'salary' => [
+            'label' => 'Lương cơ bản',
+            'type' => 'text',
+            'required' => true
+        ],
+        'allowance' => [
+            'label' => 'Phụ cấp',
+            'type' => 'text',
+            'required' => true
+        ],
         'dob' => [
             'label' => 'Ngày sinh',
             'type' => 'date',
@@ -91,6 +101,10 @@ class EmployeeController extends Controller
         $data['status'] = $request->input('status') ? 1 : 0;
         $user = Model::create($data);
 
+        $employee = Model::find($user->id);
+        $employee->code = 'NV-' . $employee->id;
+        $employee->save();
+
         return responseSuccess('Tạo mới thành công', $user);
     }
 
@@ -137,17 +151,6 @@ class EmployeeController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             return  responseError($e->getMessage());
-        }
-    }
-
-    public function files(Request $request)
-    {
-        if ($request->hasFile('file')) {
-            $file = $request->file;
-
-            $s = $file->move('upload', $file->getClientOriginalName());
-
-            dd($s);
         }
     }
 }

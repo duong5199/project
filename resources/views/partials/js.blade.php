@@ -70,6 +70,9 @@
     let url_ajax_update = "{{ Route::has($as . '.update') ? route($as . '.update', '-id-') : '' }}";
     let url_ajax_destroy = "{{ Route::has($as . '.destroy') ? route($as . '.destroy', '-id-') : '' }}";
     let url_ajax_deletes = "{{ Route::has($as . '.deletes') ? route($as . '.deletes') : '' }}";
+    let url_ajax_detail = "{{ Route::has($as . '.detail') ? route($as . '.detail', '-id-') : '' }}";
+    let url_ajax_send_mail = "{{ Route::has($as . '.send-mail') ? route($as . '.send-mail', '-id-') : '' }}";
+    let url_ajax_send_mail_multi = "{{ Route::has($as . '.send-mail-multi') ? route($as . '.send-mail-multi') : '' }}";
     let url_ajax_upload_files = "{{ Route::has('document.upload-files') ? route('document.upload-files') : '' }}";
     let url_ajax_delete_files = "{{ Route::has('document.delete-files') ? route('document.delete-files') : '' }}";
     let url_ajax_get_files = "{{ Route::has('document.get-files') ? route('document.get-files', '-id-') : '' }}";

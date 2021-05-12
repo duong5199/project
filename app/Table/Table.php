@@ -16,6 +16,8 @@ class Table
 
     protected $action_table = ['edit', 'delete'];
 
+    protected $view_empty_data = null;
+
     private $data = [];
 
     private $column = [];
@@ -29,6 +31,20 @@ class Table
     public function render()
     {
         $list = $this->data;
+
+        if (!count($list)) {
+            $data = [
+                "draw" => request()->input('draw'),
+                "recordsTotal" => 0,
+                "recordsFiltered" => 0,
+                "data" => [],
+            ];
+            if ($this->view_empty_data) {
+                $data['html'] = view($this->view_empty_data)->render();
+            }
+            return $data;
+        }
+
 
         $data = [];
 

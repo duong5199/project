@@ -49,8 +49,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('positions/deletes', 'PositionController@deletes')->name('positions.deletes');
 
     // Payroll
+    Route::post('payrolls/render', 'PayrollController@render')->name('payrolls.render');
+    Route::get('payrolls/detail/{id}', 'PayrollController@detail')->name('payrolls.detail');
+    Route::get('payrolls/send-mail/{id}', 'PayrollController@sendMail')->name('payrolls.send-mail');
+    Route::post('payrolls/send-mail-multi', 'PayrollController@sendMailMulti')->name('payrolls.send-mail-multi');
     Route::resource('payrolls', 'PayrollController');
     Route::post('payrolls/list', 'PayrollController@list')->name('payrolls.list');
     Route::post('payrolls/deletes', 'PayrollController@deletes')->name('payrolls.deletes');
+
 
 });

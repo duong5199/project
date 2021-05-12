@@ -61,19 +61,7 @@ if (!function_exists('buttonAction')) {
 
         $html = '';
         foreach ($action as $ac) {
-            switch ($ac) {
-                case 'edit':
-                    $html .= view('base/button/edit', compact('item'))->render();
-                    break;
-
-                case 'file':
-                    $html .= view('base/button/file', compact('item'))->render();
-                    break;
-
-                case 'delete':
-                    $html .= view('base/button/delete', compact('item'))->render();
-                    break;
-            }
+            $html .= view('base/button/' . $ac, compact('item'))->render();
         }
 
         return $html;

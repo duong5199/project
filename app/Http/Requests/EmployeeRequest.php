@@ -23,21 +23,21 @@ class EmployeeRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [];
-
-//        switch ($this->method()) {
-//            case 'PUT':
-//                $rules = [
-//                    'name' => ['required', 'string', 'max:255'],
-//                ];
-//                break;
-//            case 'POST':
-//                $rules = [
-//                    'name' => ['required', 'string', 'max:255'],
-//                ];
-//                break;
-//        }
-
-        return $rules;
+        return [
+            'name'  => ['required'],
+            'email'  => ['required'],
+            'phone'  => ['required'],
+            'dob'  => ['required'],
+            'address' => ['required'],
+            'position_id' => ['required'],
+            'department_id' => ['required'],
+            'status' => ['required'],
+            'salary' => ['required'],
+            'allowance' => ['required'],
+            'academic_level' => ['required'],
+            'home_town' => ['required'],
+            'cmnd' => ['required'],
+            'time_start' => ['required'],
+        ];
     }
 }

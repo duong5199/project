@@ -59,7 +59,7 @@ const LIB = {
             todayHighlight: true,
         });
 
-        $('.monthpicker').datepicker( {
+        $('.monthpicker').datepicker({
             format: "mm-yyyy",
             viewMode: "months",
             minViewMode: "months",
@@ -289,31 +289,39 @@ const COMMON = {
     },
 
     load_select2: function (options, dataSelected) {
-        let params_ajax = {
-            url: options.url.trim().toString(),
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                return {
-                    results: data
-                };
-            },
-            cache: true
-        };
+        var params_ajax = false;
+        if (typeof options.url !== "undefined") {
+            params_ajax = {
+                url: options.url.trim().toString(),
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            };
+        }
 
-        console.log(params_ajax)
         if (typeof options.ajax === 'object') {
             params_ajax = Object.assign(params_ajax, options.ajax)
         }
-        options.selector.select2({
+
+        let select2_option = {
             theme: 'bootstrap4',
             allowClear: true,
             placeholder: options.placeholder,
             multiple: options.multiple,
             minimumResultsForSearch: options['hide_search'] ? -1 : 1,
-            data: dataSelected,
-            ajax: params_ajax
-        });
+            data: dataSelected
+        };
+
+        if (params_ajax) {
+            select2_option.ajax = params_ajax;
+        }
+
+        options.selector.select2(select2_option);
         if (typeof dataSelected !== 'undefined') options.selector.find('> option').prop("selected", "selected").trigger("change");
     }
 }

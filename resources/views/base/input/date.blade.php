@@ -15,11 +15,8 @@
 
         <input type="text" name="{{ $name ?? '' }}" placeholder="{{ $item['label'] ?? 'label' }}"
                id="{{ $item['id'] ?? '' }}" class="form-control {{ $item['class'] ?? '' }} datepicker"
-               data-target="#reservationdate_{{ $name ?? '' }}"/>
+               data-target="#reservationdate_{{ $name ?? '' }}" autocomplete="off"/>
 
-{{--        <div class="input-group-append datepicker" data-target="#reservationdate_{{ $name ?? '' }}" data-toggle="datetimepicker">--}}
-{{--            <div class="input-group-text"><i class="fa fa-calendar"></i></div>--}}
-{{--        </div>--}}
     </div>
 
 </div>

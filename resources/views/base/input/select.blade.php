@@ -22,16 +22,16 @@
 
     </select>
 
-    <script>
-        options_select2["{{ $name ?? '' }}"] = {
-            selector: $('select[name="{{ $name ?? '' }}"]'),
-            @if(!empty($item['route']))
-            url: "{{ route($item['route']) }}",
-            @endif
-            placeholder: 'Chọn chức vụ',
-            multiple: false,
-            hide_search: false,
-        }
-    </script>
+    @if(!empty($item['route']))
+        <script>
+            options_select2["{{ $name ?? '' }}"] = {
+                selector: $('select[name="{{ $name ?? '' }}"]'),
+                url: "{{ route($item['route']) }}",
+                placeholder: "{{ $item['label'] }}",
+                multiple: false,
+                hide_search: false,
+            }
+        </script>
+    @endif
 
 </div>

@@ -18,6 +18,11 @@ return [
         'icon' => 'fas fa-user-tie',
     ],
     [
+        'name' => 'Quản lý hợp đồng',
+        'url' => 'insurrances.index',
+        'icon' => 'fas fa-coins',
+    ],
+    [
         'name' => 'Quản lý phòng ban',
         'url' => 'departments.index',
         'icon' => 'fas fa-chess-rook',

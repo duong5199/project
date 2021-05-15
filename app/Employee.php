@@ -26,6 +26,10 @@ class Employee extends Model
         'salary',
         'allowance',
         'code',
+        'academic_level',
+        'home_town',
+        'cmnd',
+        'time_start',
     ];
 
     public function documents()

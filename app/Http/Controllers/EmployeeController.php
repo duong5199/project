@@ -29,6 +29,11 @@ class EmployeeController extends Controller
             'type' => 'text',
             'required' => true
         ],
+        'cmnd' => [
+            'label' => 'Số CCCD/CMND',
+            'type' => 'number',
+            'required' => true
+        ],
         'salary' => [
             'label' => 'Lương cơ bản',
             'type' => 'text',
@@ -56,13 +61,33 @@ class EmployeeController extends Controller
             'required' => true,
             'route' => 'departments.select2',
         ],
+        'time_start' => [
+            'label' => 'Ngày bắt đầu công tác',
+            'type' => 'date',
+            'required' => true
+        ],
+        'academic_level' => [
+            'label' => 'Trình đồ học vẫn',
+            'type' => 'select',
+            'required' => true,
+            'option' => [
+                1 => 'Đại học',
+                2 => 'Cao đắng',
+                3 => 'Trung cấp'
+            ]
+        ],
         'status' => [
             'label' => 'Trạng thái',
             'type' => 'status',
             'required' => true
         ],
         'address' => [
-            'label' => 'Địa chỉ',
+            'label' => 'Địa chỉ thường trú',
+            'type' => 'text',
+            'required' => true
+        ],
+        'home_town' => [
+            'label' => 'Quê quán',
             'type' => 'text',
             'required' => true
         ]
@@ -94,10 +119,21 @@ class EmployeeController extends Controller
         return $table->render();
     }
 
+    public function load(Request $request)
+    {
+        $search = $request->input('q') ?? '';
+        return Model::select(['id', 'name as text'])
+            ->where('status', 1)
+            ->where('name', 'LIKE', '%'. $search .'%')
+            ->get()
+            ->toArray();
+    }
+
     public function store(ThisRequest $request)
     {
         $data = $request->all();
         $data['dob'] = formatDateSave($data['dob']);
+        $data['time_start'] = formatDateSave($data['time_start']);
         $data['status'] = $request->input('status') ? 1 : 0;
         $user = Model::create($data);
 
@@ -113,6 +149,8 @@ class EmployeeController extends Controller
         $data = Model::find($id);
         $data->position_id = $data->position()->select(['id', 'name as text'])->get()->toArray();
         $data->department_id = $data->department()->select(['id', 'name as text'])->get()->toArray();
+        $data->time_start = formatDate($data->time_start);
+        $data->dob = formatDate($data->dob);
         return $data->toArray();
     }
 
@@ -121,6 +159,7 @@ class EmployeeController extends Controller
         $user = Model::find($id);
         $data = $request->all();
         $data['dob'] = formatDateSave($data['dob']);
+        $data['time_start'] = formatDateSave($data['time_start']);
         $data['status'] = $request->input('status') ? 1 : 0;
 
         $user->fill($data);
@@ -150,7 +189,7 @@ class EmployeeController extends Controller
             return responseSuccess('Xoá thành công');
         } catch (Exception $e) {
             DB::rollback();
-            return  responseError($e->getMessage());
+            return responseError($e->getMessage());
         }
     }
 }

@@ -27,9 +27,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('users/deletes', 'UserController@deletes')->name('users.deletes');
 
     // Employee
+    Route::get('employees/select2', 'EmployeeController@load')->name('employees.select2');
     Route::resource('employees', 'EmployeeController');
     Route::post('employees/list', 'EmployeeController@list')->name('employees.list');
     Route::post('employees/deletes', 'EmployeeController@deletes')->name('employees.deletes');
+
+    // Insurrances
+    Route::resource('insurrances', 'InsurranceController');
+    Route::post('insurrances/list', 'InsurranceController@list')->name('insurrances.list');
+    Route::post('insurrances/deletes', 'InsurranceController@deletes')->name('insurrances.deletes');
 
     // Document
     Route::post('document/upload-files', 'DocumentController@files')->name('document.upload-files');

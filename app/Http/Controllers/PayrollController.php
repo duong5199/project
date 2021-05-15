@@ -89,7 +89,6 @@ class PayrollController extends Controller
             return redirect(route('payrolls.index'))->with('Oke');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
             return redirect(route('payrolls.index'))->with($e->getMessage());
         }
 

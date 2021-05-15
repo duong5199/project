@@ -14,7 +14,7 @@ class DepartmentController extends Controller
 
     protected $field_form = [
         'name' => [
-            'label' => 'Tên chức vụ',
+            'label' => 'Tên phòng ban',
             'type' => 'text',
             'required' => true
         ],

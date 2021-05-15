@@ -45,7 +45,7 @@ class DepartmentTable extends BaseTable
                 'data' => 'id',
             ],
             'name' => [
-                'label' => 'Họ và tên',
+                'label' => 'Tên phòng ban',
                 'data' => 'name',
             ],
             'description' => [

@@ -20,6 +20,7 @@ class EmployeeTable extends BaseTable
         $row = [];
 
         $row[] = $item->id;
+        $row[] = $item->code;
         $row[] = $item->name;
         $row[] = $item->email;
         $row[] = formatDate($item->created_at);
@@ -31,6 +32,7 @@ class EmployeeTable extends BaseTable
     {
         $query = Model::select([
             'id',
+            'code',
             'name',
             'email',
             'created_at',
@@ -45,6 +47,10 @@ class EmployeeTable extends BaseTable
             'id' => [
                 'label' => 'ID',
                 'data' => 'id',
+            ],
+            'code' => [
+                'label' => 'Mã nhân viên',
+                'data' => 'code',
             ],
             'name' => [
                 'label' => 'Họ và tên',

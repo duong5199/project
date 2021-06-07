@@ -2,50 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\InsurranceRequest as ThisRequest;
-use App\Insurrance as Model;
-use App\Table\InsurranceTable as ThisTable;
+use App\Http\Requests\ContractRequest as ThisRequest;
+use App\Contract as Model;
+use App\Table\ContractTable as ThisTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class InsurranceController extends Controller
+class ContractController extends Controller
 {
-    protected $title_page = 'Danh sách bảo hiểm';
+    protected $title_page = 'Danh sách hợp đồng';
 
     protected $field_form = [
-        'code' => [
-            'label' => 'Mã số',
-            'type' => 'text',
-            'required' => true
-        ],
         'employee_id' => [
             'label' => 'Nhân viên',
             'type' => 'select',
             'required' => true,
             'route' => 'employees.select2',
         ],
-        'bhxh' => [
-            'label' => 'Số BHXH',
+        'name' => [
+            'label' => 'Tên',
             'type' => 'text',
             'required' => true
         ],
-        'bhyt' => [
-            'label' => 'Số BHYT',
-            'type' => 'text',
-            'required' => true
-        ],
-        'address_active' => [
-            'label' => 'Nơi cấp',
-            'type' => 'text',
-            'required' => true
+        'type' => [
+            'label' => 'Loại hợp đồng',
+            'type' => 'select',
+            'required' => true,
+            'option' => [
+                1 => 'Không thời hạn',
+                2 => 'Có thời hạn',
+                3 => 'Thực tập',
+                4 => 'Cộng tác viên'
+            ]
         ],
         'date_active' => [
-            'label' => 'Ngày cấp',
+            'label' => 'Ngày hiệu lực',
             'type' => 'date',
             'required' => true
         ],
         'date_expired' => [
-            'label' => 'Ngày hết hạn',
+            'label' => 'Ngày hết hiệu lực',
             'type' => 'date',
             'required' => true
         ],
@@ -76,8 +72,8 @@ class InsurranceController extends Controller
     public function load(Request $request)
     {
         $search = $request->input('q') ?? '';
-        return Model::select(['id', 'code as text'])
-            ->where('code', 'LIKE', '%'. $search .'%')
+        return Model::select(['id', 'name as text'])
+            ->where('name', 'LIKE', '%'. $search .'%')
             ->get()
             ->toArray();
     }

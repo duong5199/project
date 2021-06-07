@@ -21,6 +21,12 @@ Route::group(['middleware' => 'auth'], function () {
     // Dashboard
     Route::get('/', 'DashboardController@index')->name('home');
 
+     // Post
+     Route::resource('posts', 'PostController');
+     Route::post('posts/list', 'PostController@list')->name('posts.list');
+     Route::post('posts/deletes', 'PostController@deletes')->name('posts.deletes');
+
+
     // User
     Route::resource('users', 'UserController');
     Route::post('users/list', 'UserController@list')->name('users.list');
@@ -36,6 +42,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('insurrances', 'InsurranceController');
     Route::post('insurrances/list', 'InsurranceController@list')->name('insurrances.list');
     Route::post('insurrances/deletes', 'InsurranceController@deletes')->name('insurrances.deletes');
+
+    // Contract
+    Route::resource('contracts', 'ContractController');
+    Route::post('contracts/list', 'ContractController@list')->name('contracts.list');
+    Route::post('contracts/deletes', 'ContractController@deletes')->name('contracts.deletes');
+
+    // Praise 
+    Route::resource('praises', 'PraiseController');
+    Route::post('praises/list', 'PraiseController@list')->name('praises.list');
+    Route::post('praises/deletes', 'PraiseController@deletes')->name('praises.deletes');
+
+    //  Discipline
+    Route::resource('disciplines', 'DisciplineController');
+    Route::post('disciplines/list', 'DisciplineController@list')->name('disciplines.list');
+    Route::post('disciplines/deletes', 'DisciplineController@deletes')->name('disciplines.deletes');
 
     // Document
     Route::post('document/upload-files', 'DocumentController@files')->name('document.upload-files');

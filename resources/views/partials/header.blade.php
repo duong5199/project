@@ -18,7 +18,7 @@
 
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item">
-                    <i class="far fa-id-badge mr-2"></i> Trang cả nhân
+                    <i class="far fa-id-badge mr-2"></i> Trang cá nhân
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

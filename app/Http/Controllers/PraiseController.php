@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\InsurranceRequest as ThisRequest;
-use App\Insurrance as Model;
-use App\Table\InsurranceTable as ThisTable;
+use App\Http\Requests\PraiseRequest as ThisRequest;
+use App\Praise as Model;
+use App\Table\PraiseTable as ThisTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class InsurranceController extends Controller
+class PraiseController extends Controller
 {
-    protected $title_page = 'Danh sách bảo hiểm';
+    protected $title_page = 'Danh sách khen thưởng';
 
     protected $field_form = [
         'code' => [
-            'label' => 'Mã số',
+            'label' => 'Mã KT',
             'type' => 'text',
             'required' => true
         ],
@@ -24,29 +24,14 @@ class InsurranceController extends Controller
             'required' => true,
             'route' => 'employees.select2',
         ],
-        'bhxh' => [
-            'label' => 'Số BHXH',
+        'reason' => [
+            'label' => 'Lý do',
             'type' => 'text',
             'required' => true
         ],
-        'bhyt' => [
-            'label' => 'Số BHYT',
+        'method' => [
+            'label' => 'Hình thức KT',
             'type' => 'text',
-            'required' => true
-        ],
-        'address_active' => [
-            'label' => 'Nơi cấp',
-            'type' => 'text',
-            'required' => true
-        ],
-        'date_active' => [
-            'label' => 'Ngày cấp',
-            'type' => 'date',
-            'required' => true
-        ],
-        'date_expired' => [
-            'label' => 'Ngày hết hạn',
-            'type' => 'date',
             'required' => true
         ],
         'status' => [
@@ -76,8 +61,8 @@ class InsurranceController extends Controller
     public function load(Request $request)
     {
         $search = $request->input('q') ?? '';
-        return Model::select(['id', 'code as text'])
-            ->where('code', 'LIKE', '%'. $search .'%')
+        return Model::select(['id', 'name as text'])
+            ->where('name', 'LIKE', '%'. $search .'%')
             ->get()
             ->toArray();
     }
@@ -86,8 +71,6 @@ class InsurranceController extends Controller
     public function store(ThisRequest $request, Model $model)
     {
         $data = $request->all();
-        $data['date_active'] = formatDateSave($data['date_active']);
-        $data['date_expired'] = formatDateSave($data['date_expired']);
         $data['status'] = $request->input('status') ? 1 : 0;
         $model->fill($data);
         $model->save();
@@ -99,8 +82,6 @@ class InsurranceController extends Controller
     {
         $data = Model::find($id);
         $data->employee_id = $data->employee()->select(['id', 'name as text'])->get()->toArray();
-        $data->date_active = formatDate($data->date_active);
-        $data->date_expired = formatDate($data->date_expired);
         return $data->toArray();
     }
 
@@ -108,8 +89,6 @@ class InsurranceController extends Controller
     {
         $user = Model::find($id);
         $data = $request->input();
-        $data['date_active'] = formatDateSave($data['date_active']);
-        $data['date_expired'] = formatDateSave($data['date_expired']);
         $data['status'] = $request->input('status') ? 1 : 0;
         $user->fill($data);
         $user->save();

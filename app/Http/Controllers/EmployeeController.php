@@ -67,7 +67,7 @@ class EmployeeController extends Controller
             'required' => true
         ],
         'academic_level' => [
-            'label' => 'Trình đồ học vẫn',
+            'label' => 'Trình đồ học vấn',
             'type' => 'select',
             'required' => true,
             'option' => [

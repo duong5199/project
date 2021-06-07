@@ -44,12 +44,12 @@
                                 'required' => true,
                                 'value' => 22
                             ],
-                            'ot_ratio' => [
-                                'label' => 'Hệ số lương làm thêm - Mặc định x2',
-                                'type' => 'text',
-                                'required' => true,
-                                'value' => 2
-                            ],
+                            // 'ot_ratio' => [
+                            //     'label' => 'Hệ số lương làm thêm - Mặc định x2',
+                            //     'type' => 'text',
+                            //     'required' => true,
+                            //     'value' => 2
+                            // ],
                         ]
                         ?>
 
@@ -118,12 +118,17 @@
                                                             'value' => 22
                                                         ],
                                                         'ot_hours' => [
-                                                            'label' => 'Giơ làm thêm (Giờ)',
+                                                            'label' => 'Giờ làm thêm (Giờ)',
+                                                            'type' => 'text',
+                                                            'value' => 0
+                                                        ],
+                                                        'ot_ratio' => [
+                                                            'label' => 'Giờ làm thêm ngày lễ (Giờ)',
                                                             'type' => 'text',
                                                             'value' => 0
                                                         ],
                                                         'owed_salary' => [
-                                                            'label' => 'Lương còn nợ (VNĐ)',
+                                                            'label' => 'Tạm ứng (VNĐ)',
                                                             'type' => 'text',
                                                             'value' => 0
                                                         ],

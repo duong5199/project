@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Employee;
+use App\Contract;
 use App\Http\Helpers\Mail;
 use App\Payroll as Model;
 use App\Http\Requests\PayrollRequest as ThisRequest;
@@ -34,12 +35,17 @@ class PayrollController extends Controller
             'value' => 22
         ],
         'ot_hours' => [
-            'label' => 'Giơ làm thêm (Giờ)',
+            'label' => 'Giờ làm thêm (Giờ)',
+            'type' => 'text',
+            'value' => 0
+        ],
+        'ot_ratio' => [
+            'label' => 'Giờ làm thêm ngày lễ (Giờ)',
             'type' => 'text',
             'value' => 0
         ],
         'owed_salary' => [
-            'label' => 'Lương còn nợ (VNĐ)',
+            'label' => 'Tạm ứng (VNĐ)',
             'type' => 'text',
             'value' => 0
         ],
@@ -52,35 +58,53 @@ class PayrollController extends Controller
 
     public function render(Request $request)
     {
+
         DB::beginTransaction();
         try {
 
             foreach ($request->input('employee') as $item) {
                 $employee = Employee::find($item['id']);
-
+                
                 $data = [
                     "month" => formatDateSave('01-' . $request->input('month')),
                     "days" => $request->input('days') ?? 22,
-                    "ot_ratio" => $request->input('ot_ratio') ?? 2,
+                    // "ot_ratio" => $request->input('ot_ratio') ?? 2,
                     "workdays" => $request->input('workdays') ?? 22,
                     "salary" => (int)$item['salary'] ?? (int)$employee->salary,
                     "allowance" => (int)$item['allowance'] ?? (int)$employee->allowance,
                     "ot_hours" => (int)$item['ot_hours'] ?? 0,
+                    "ot_ratio" => (int)$item['ot_ratio'] ?? 0,
                     "owed_salary" => (int)$item['owed_salary'] ?? 0,
                     "other_fees" => 0,
                     "tax" => 0,
                     "employee_id" => $employee->id,
                 ];
-
+                // tổng lương 
                 $sub_salary = $data['salary'] + $data['allowance'];
 
                 $data['sub_salary'] = intval(($sub_salary / (int)$data['days']) * (int)$data['workdays']);
-                $data['ot_salary'] = intval(($data['sub_salary'] / 8) * $data['ot_hours']);
-                $data['bhxh'] = intval(($data['salary'] * 8) / 100);
-                $data['bhyt'] = intval(($data['sub_salary'] * 1.5) / 100);
-                $data['bhtn'] = intval(($data['sub_salary'] * 1) / 100);
+                // $data['ot_salary'] = intval(($data['sub_salary'] / 8) * $data['ot_hours']);
+                // $data['ot_salary'] = intval((($sub_salary / (int)$data['days']) / 8) * $data['ot_hours'] * (int)$data['ot_ratio']);
+                $data['ot_salary'] = intval((($sub_salary / (int)$data['days']) / 8) * $data['ot_hours'] * 2);
+                $data['ot_salary_holiday'] = intval((($sub_salary / (int)$data['days']) / 8) * $data['ot_hours'] * 3);
+                
+                $contracts = Contract::find($data['employee_id']);
+                if ($contracts->type == 1 || $contracts->type == 2) {
+                    $data['bhxh'] = intval(($data['salary'] * 8) / 100);
+                    $data['bhyt'] = intval(($data['salary'] * 1.5) / 100);
+                    $data['bhtn'] = intval(($data['salary'] * 1) / 100);
 
-                $data['total_salary'] = ($data['sub_salary']) - ($data['bhxh'] + $data['bhyt'] + $data['bhtn']) + $data['ot_salary'] + $data['owed_salary'] - $data['other_fees'];
+                    $data['total_salary'] = ( $data['sub_salary'] + $data['ot_salary'] + $data['ot_salary_holiday'] ) - ($data['bhxh'] + $data['bhyt'] + $data['bhtn'] + $data['owed_salary'] + $data['other_fees'] );
+                    
+                } else {
+                    $data['bhxh'] = 0;
+                    $data['bhyt'] = 0;
+                    $data['bhtn'] = 0;
+
+                    $data['total_salary'] = $data['sub_salary'] + $data['ot_salary'] + $data['ot_salary_holiday'];
+                
+                }
+
 
                 Model::create($data);
             }
@@ -127,12 +151,29 @@ class PayrollController extends Controller
         $sub_salary = (int)$user->salary + (int)$user->allowance;
 
         $user->sub_salary = intval(($sub_salary / (int)$user->days) * (int)$user->workdays);
-        $user->ot_salary = intval(($user->sub_salary / 8) * $user->ot_hours);
-        $user->bhxh = intval(($user->salary * 8) / 100);
-        $user->bhyt = intval(($user->sub_salary * 1.5) / 100);
-        $user->bhtn = intval(($user->sub_salary * 1) / 100);
+        // $user->ot_salary = intval(($user->sub_salary / 8) * $user->ot_hours);
+        // $user->ot_salary = intval((($sub_salary / (int)$user->days) / 8) * $user->ot_hours * $user->ot_ratio );
+        $user->ot_salary = intval((($sub_salary / (int)$user->days) / 8) * $user->ot_hours * 2 );
+        $user->ot_salary_holiday = intval((($sub_salary / (int)$user->days) / 8) * $user->ot_hours * 3 );
+       
+        $contracts = Contract::find($user->employee_id);
 
-        $user->total_salary = ($user->sub_salary) - ($user->bhxh + $user->bhyt + $user->bhtn) + $user->ot_salary + $user->owed_salary - $user->other_fees;
+        if ($contracts->type == 1 || $contracts->type == 2) {
+            $user->bhxh = intval(($user->salary * 8) / 100);
+            $user->bhyt = intval(($user->salary * 1.5) / 100);
+            $user->bhtn = intval(($user->salary * 1) / 100);
+
+            $user->total_salary = ($user->sub_salary + $user->ot_salary + $user->ot_salary_holiday) - ($user->bhxh + $user->bhyt + $user->bhtn + $user->owed_salary + $user->other_fees);
+            
+        } else {
+            $user->bhxh = 0;
+            $user->bhyt = 0;
+            $user->bhtn = 0;
+
+            $user->total_salary = ($user->sub_salary + $user->ot_salary + $user->ot_salary_holiday);
+        
+        }
+        
         $user->save();
 
         return responseSuccess('Cập nhật thành công thành công');

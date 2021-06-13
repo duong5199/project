@@ -7,6 +7,7 @@ use App\Praise as Model;
 
 class PraiseTable extends BaseTable
 {
+    protected $search_column = ['code'];
 
     public function __construct()
     {

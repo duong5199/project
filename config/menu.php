@@ -24,7 +24,7 @@ return [
     // ],
     [
         'name' => 'Quản lý danh mục',
-        'url' => 'home',
+        'url' => '',
         'icon' => 'fas fa-chess-rook',
         'child' => [
             [

@@ -7,6 +7,7 @@ use App\Insurrance as Model;
 
 class InsurranceTable extends BaseTable
 {
+    protected $search_column = ['code'];
 
     public function __construct()
     {

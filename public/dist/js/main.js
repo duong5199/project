@@ -217,6 +217,8 @@ const COMMON = {
 
         $('#main-menu').find(`[href="${href}"]`).addClass('active');
 
+        console.log($('#main-menu').find(`[href="${href}"]`).closest('ul').closest('li').addClass('menu-open').children('a').addClass('active') );
+
     },
 
     reload_table: function () {
@@ -377,6 +379,11 @@ const FORM = {
                     switch (key) {
                         case 'status':
                             $(document).find(`[name="${key}"]`).bootstrapSwitch('state', data[key] === 1);
+                            break;
+                        case 'position_id':
+                        case 'department_id':
+                        case 'employee_id':
+                            $(document).find(`[name="${key}"]`).val(data[key][0]['id'])
                             break;
                         default:
                             $(document).find(`[name="${key}"]`).val(data[key])

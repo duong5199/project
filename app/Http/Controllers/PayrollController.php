@@ -64,7 +64,7 @@ class PayrollController extends Controller
 
             foreach ($request->input('employee') as $item) {
                 $employee = Employee::find($item['id']);
-                
+
                 $data = [
                     "month" => formatDateSave('01-' . $request->input('month')),
                     "days" => $request->input('days') ?? 22,
@@ -79,7 +79,7 @@ class PayrollController extends Controller
                     "tax" => 0,
                     "employee_id" => $employee->id,
                 ];
-                // tổng lương 
+                // tổng lương
                 $sub_salary = $data['salary'] + $data['allowance'];
 
                 $data['sub_salary'] = intval(($sub_salary / (int)$data['days']) * (int)$data['workdays']);
@@ -87,7 +87,7 @@ class PayrollController extends Controller
                 // $data['ot_salary'] = intval((($sub_salary / (int)$data['days']) / 8) * $data['ot_hours'] * (int)$data['ot_ratio']);
                 $data['ot_salary'] = intval((($sub_salary / (int)$data['days']) / 8) * $data['ot_hours'] * 2);
                 $data['ot_salary_holiday'] = intval((($sub_salary / (int)$data['days']) / 8) * $data['ot_hours'] * 3);
-                
+
                 $contracts = Contract::find($data['employee_id']);
                 if ($contracts->type == 1 || $contracts->type == 2) {
                     $data['bhxh'] = intval(($data['salary'] * 8) / 100);
@@ -95,14 +95,14 @@ class PayrollController extends Controller
                     $data['bhtn'] = intval(($data['salary'] * 1) / 100);
 
                     $data['total_salary'] = ( $data['sub_salary'] + $data['ot_salary'] + $data['ot_salary_holiday'] ) - ($data['bhxh'] + $data['bhyt'] + $data['bhtn'] + $data['owed_salary'] + $data['other_fees'] );
-                    
+
                 } else {
                     $data['bhxh'] = 0;
                     $data['bhyt'] = 0;
                     $data['bhtn'] = 0;
 
                     $data['total_salary'] = $data['sub_salary'] + $data['ot_salary'] + $data['ot_salary_holiday'];
-                
+
                 }
 
 
@@ -155,25 +155,31 @@ class PayrollController extends Controller
         // $user->ot_salary = intval((($sub_salary / (int)$user->days) / 8) * $user->ot_hours * $user->ot_ratio );
         $user->ot_salary = intval((($sub_salary / (int)$user->days) / 8) * $user->ot_hours * 2 );
         $user->ot_salary_holiday = intval((($sub_salary / (int)$user->days) / 8) * $user->ot_hours * 3 );
-       
+
         $contracts = Contract::find($user->employee_id);
 
-        if ($contracts->type == 1 || $contracts->type == 2) {
+        if (empty($contracts)) {
+            $user->bhxh = 0;
+            $user->bhyt = 0;
+            $user->bhtn = 0;
+
+            $user->total_salary = ($user->sub_salary + $user->ot_salary + $user->ot_salary_holiday);
+            
+        } else if ($contracts->type == 1 || $contracts->type == 2) {
             $user->bhxh = intval(($user->salary * 8) / 100);
             $user->bhyt = intval(($user->salary * 1.5) / 100);
             $user->bhtn = intval(($user->salary * 1) / 100);
 
             $user->total_salary = ($user->sub_salary + $user->ot_salary + $user->ot_salary_holiday) - ($user->bhxh + $user->bhyt + $user->bhtn + $user->owed_salary + $user->other_fees);
-            
+
         } else {
             $user->bhxh = 0;
             $user->bhyt = 0;
             $user->bhtn = 0;
 
             $user->total_salary = ($user->sub_salary + $user->ot_salary + $user->ot_salary_holiday);
-        
         }
-        
+
         $user->save();
 
         return responseSuccess('Cập nhật thành công thành công');

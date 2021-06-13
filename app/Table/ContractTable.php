@@ -2,6 +2,7 @@
 
 namespace App\Table;
 
+use App\Contract;
 use \App\Table\Table as BaseTable;
 use App\Contract as Model;
 
@@ -20,7 +21,7 @@ class ContractTable extends BaseTable
         $row[] = $item->id;
         $row[] = $item->employee->name;
         $row[] = $item->name;
-        $row[] = $item->type;
+        $row[] = Contract::LABEL_TYPE($item->type);
         $row[] = formatDate($item->date_active);
         $row[] = formatDate($item->date_expired);
         $row[] = formatDate($item->created_at);

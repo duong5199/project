@@ -7,6 +7,7 @@ use App\Discipline as Model;
 
 class DisciplineTable extends BaseTable
 {
+    protected $search_column = ['code'];
 
     public function __construct()
     {

@@ -18,6 +18,8 @@ class Table
 
     protected $view_empty_data = null;
 
+    protected $search_column = ['name'];
+
     private $data = [];
 
     private $column = [];
@@ -91,7 +93,14 @@ class Table
         }
 
         if (!empty($params['search']['value'])) {
-            $model->where('name', 'LIKE', '%'. $params['search']['value'] .'%');
+            $search_column = $this->search_column;
+            $search = $params['search']['value'];
+            $model->where(function($query) use ($search_column, $search) {
+                $query->where($search_column[0], 'LIKE', '%'. $search .'%');
+                foreach (array_slice($search_column, 1) as $col) {
+                    $query->orWhere($col, 'LIKE', '%'. $search .'%');
+                }
+            });
         }
 
         $perPage = $params['length'] ?? $this->limit;

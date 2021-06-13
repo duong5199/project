@@ -4,7 +4,7 @@
     <ul class="nav nav-treeview">
         @foreach($menu as $item)
             <li class="nav-item">
-                <a href="{{ route($item['url']) }}" class="nav-link">
+                <a href="{{ !empty($item['url']) ? route($item['url']) : '' }}" class="nav-link">
                     <i class="nav-icon {{ $item['icon'] ?? 'far fa-circle' }}  nav-icon"></i>
                     <p>
                         {{ $item['name'] }}
